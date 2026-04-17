@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-DWSWI4JT.js";import{a as t,i as n}from"./chunk-OE4NN4TA-vSvo9xD3.js";import{i as r}from"./react-redux-DXPPmGv0.js";var i=e(),a=()=>r(e=>e.auth.accessToken)?(0,i.jsx)(t,{}):(0,i.jsx)(n,{to:`/login`,replace:!0});export{a as default};

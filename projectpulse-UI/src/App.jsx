@@ -1,15 +1,17 @@
+import { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { Loader2Icon } from "lucide-react";
 import Layout from "./pages/Layout";
 import { Toaster } from "react-hot-toast";
-import Dashboard from "./pages/Dashboard";
-import Projects from "./pages/Projects";
-import Team from "./pages/Team";
-import ProjectDetails from "./pages/ProjectDetails";
-import TaskDetails from "./pages/TaskDetails";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Notifications from "./pages/Notifications";
-import RequireAuth from "./components/RequireAuth";
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Projects = lazy(() => import("./pages/Projects"));
+const Team = lazy(() => import("./pages/Team"));
+const ProjectDetails = lazy(() => import("./pages/ProjectDetails"));
+const TaskDetails = lazy(() => import("./pages/TaskDetails"));
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const Notifications = lazy(() => import("./pages/Notifications"));
+const RequireAuth = lazy(() => import("./components/RequireAuth"));
 
 const App = () => {
     return (
@@ -29,21 +31,27 @@ const App = () => {
                     error: { iconTheme: { primary: '#ef4444', secondary: '#fff' } },
                 }}
             />
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route element={<RequireAuth />}>
-                    <Route path="/" element={<Layout />}>
-                        <Route index element={<Dashboard />} />
-                        <Route path="team" element={<Team />} />
-                        <Route path="projects" element={<Projects />} />
-                        <Route path="projectsDetail" element={<ProjectDetails />} />
-                        <Route path="taskDetails" element={<TaskDetails />} />
-                        <Route path="notifications" element={<Notifications />} />
+            <Suspense fallback={
+                <div className="flex items-center justify-center h-screen bg-white dark:bg-zinc-950">
+                    <Loader2Icon className="size-7 text-blue-500 animate-spin" />
+                </div>
+            }>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route element={<RequireAuth />}>
+                        <Route path="/" element={<Layout />}>
+                            <Route index element={<Dashboard />} />
+                            <Route path="team" element={<Team />} />
+                            <Route path="projects" element={<Projects />} />
+                            <Route path="projectsDetail" element={<ProjectDetails />} />
+                            <Route path="taskDetails" element={<TaskDetails />} />
+                            <Route path="notifications" element={<Notifications />} />
+                        </Route>
                     </Route>
-                </Route>
-                <Route path="*" element={<Navigate to="/login" replace />} />
-            </Routes>
+                    <Route path="*" element={<Navigate to="/login" replace />} />
+                </Routes>
+            </Suspense>
         </>
     );
 };

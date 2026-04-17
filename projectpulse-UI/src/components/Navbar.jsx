@@ -2,6 +2,7 @@ import { SearchIcon, PanelLeft, BellIcon } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toggleTheme } from '../features/themeSlice'
 import { logout } from '../features/authSlice'
+import { setAllUsers, setProjects } from '../features/workspaceSlice'
 import { MoonIcon, SunIcon } from 'lucide-react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useState } from 'react'
@@ -18,7 +19,12 @@ const Navbar = ({ setIsSidebarOpen }) => {
     const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '' })
     const [saving, setSaving] = useState(false)
 
-    const handleLogout = () => { dispatch(logout()); navigate('/login') }
+    const handleLogout = () => {
+        dispatch(logout())
+        dispatch(setAllUsers([]))
+        dispatch(setProjects([]))
+        navigate('/login')
+    }
 
     const handleSaveProfile = async () => {
         if (!profileForm.fullName.trim()) return toast.error("Name required")

@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { UsersIcon, Search, Shield, Activity, Mail, UserMinus } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectAllProjects, selectAllUsers, updateProject } from "../features/workspaceSlice";
+import { selectAllProjects, updateProject } from "../features/workspaceSlice";
 import { removeMember, getProject } from "../api/projectApi";
 import { getMe } from "../api/userApi";
 import toast from "react-hot-toast";
@@ -24,8 +24,7 @@ const Team = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [myProfile, setMyProfile] = useState(null);
 
-    // Build a deduplicated list of all members across all projects
-    const allMembers = (() => {
+    const allMembers = useMemo(() => {
         const map = new Map();
         projects.forEach(project => {
             (project.members || []).forEach(m => {
@@ -38,16 +37,16 @@ const Team = () => {
             });
         });
         return Array.from(map.values());
-    })();
+    }, [projects]);
 
-    const filtered = allMembers.filter(m =>
+    const filtered = useMemo(() => allMembers.filter(m =>
         !searchTerm ||
         (m.fullName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
         (m.email || "").toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    ), [allMembers, searchTerm]);
 
-    const allTasks = projects.flatMap(p => p.tasks || []);
-    const activeProjCount = projects.filter(p => p.status === "Active").length;
+    const allTasks = useMemo(() => projects.flatMap(p => p.tasks || []), [projects]);
+    const activeProjCount = useMemo(() => projects.filter(p => p.status === "Active").length, [projects]);
 
     useEffect(() => {
         getMe().then(r => setMyProfile(r?.data)).catch(() => {});

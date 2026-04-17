@@ -1,0 +1,1 @@
+import{t as e}from"./axios-DUfzRyUd.js";var t=(t={})=>e.get(`/projects`,{params:t}),n=t=>e.get(`/projects/${t}`),r=t=>e.post(`/projects`,t),i=(t,n)=>e.put(`/projects/${t}`,n),a=t=>e.delete(`/projects/${t}`),o=(t,n)=>e.post(`/projects/${t}/members`,n),s=(t,n)=>e.delete(`/projects/${t}/members/${n}`);export{t as a,n as i,r as n,s as o,a as r,i as s,o as t};

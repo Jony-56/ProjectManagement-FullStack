@@ -1,0 +1,1 @@
+import{t as e}from"./axios-DUfzRyUd.js";var t=t=>e.post(`/auth/register`,t),n=t=>e.post(`/auth/login`,t);export{t as n,n as t};

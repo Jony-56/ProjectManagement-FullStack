@@ -30,7 +30,10 @@ const workspaceSlice = createSlice({
             state.loading = action.payload;
         },
         setAllUsers: (state, action) => {
-            state.allUsers = action.payload || [];
+            state.allUsers = (action.payload || []).map(user => ({
+                ...user,
+                id: user.id ?? user._id,
+            }));
         },
         addProject: (state, action) => {
             const normalized = normalizeProject(action.payload);

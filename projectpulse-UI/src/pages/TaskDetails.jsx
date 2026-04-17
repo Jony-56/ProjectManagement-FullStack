@@ -35,32 +35,39 @@ const TaskDetails = () => {
     const [newComment, setNewComment] = useState("");
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
-    const [editingStatus, setEditingStatus] = useState(false);
 
     const fetchTask = async () => {
         if (!projectId || !taskId) return;
         try {
             const res = await getTask(projectId, taskId);
             const taskData = res?.data;
-            if (taskData) { setTask(taskData); setComments(taskData.comments || []); }
+            if (taskData) {
+                setTask(taskData);
+                setComments(taskData.comments || []);
+            }
         } catch (err) {
             console.error("Failed to load task:", err);
-        } finally { setLoading(false); }
+        } finally {
+            setLoading(false);
+        }
     };
 
-    useEffect(() => { fetchTask(); }, [projectId, taskId]);
-
-    // Poll for new comments every 15s
     useEffect(() => {
-        if (!task) return;
-        const interval = setInterval(async () => {
-            try {
-                const res = await getTask(projectId, taskId);
-                if (res?.data) setComments(res.data.comments || []);
-            } catch {}
-        }, 15000);
-        return () => clearInterval(interval);
-    }, [task]);
+        if (!projectId || !taskId) return;
+
+        const cachedTask = project?.tasks?.find(
+            (t) => String(t.id) === String(taskId) || String(t._id) === String(taskId)
+        );
+
+        if (cachedTask) {
+            setTask(cachedTask);
+            setComments(cachedTask.comments || []);
+            setLoading(false);
+            return;
+        }
+
+        fetchTask();
+    }, [projectId, taskId, project]);
 
     const handleAddComment = async () => {
         if (!newComment.trim()) return;

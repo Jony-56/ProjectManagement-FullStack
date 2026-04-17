@@ -1,0 +1,1 @@
+import{t as e}from"./axios-DUfzRyUd.js";var t=()=>e.get(`/users/me`),n=t=>e.put(`/users/me`,t),r=t=>e.put(`/users/me/change-password`,t),i=()=>e.get(`/users`);export{n as i,i as n,t as r,r as t};

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { CheckSquareIcon, ChevronDownIcon, ChevronRightIcon } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -8,7 +8,13 @@ function MyTasksSidebar() {
     const user = useSelector((state) => state.auth.user);
     const projects = useSelector(selectAllProjects);
     const [showMyTasks, setShowMyTasks] = useState(false);
-    const [myTasks, setMyTasks] = useState([]);
+
+    const myTasks = useMemo(() => {
+        if (!user?.id || !projects.length) return [];
+        return projects.flatMap(p =>
+            (p.tasks || []).filter(t => t.assigneeId === user.id).map(t => ({ ...t, projectId: p.id }))
+        );
+    }, [projects, user]);
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -18,14 +24,6 @@ function MyTasksSidebar() {
             default: return 'bg-gray-400';
         }
     };
-
-    useEffect(() => {
-        if (!user?.id || !projects.length) return;
-        const tasks = projects.flatMap(p =>
-            (p.tasks || []).filter(t => t.assigneeId === user.id).map(t => ({ ...t, projectId: p.id }))
-        );
-        setMyTasks(tasks);
-    }, [projects, user]);
 
     return (
         <div className="mt-6 px-3">
